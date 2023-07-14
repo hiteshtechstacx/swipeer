@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .swipe-button {
+      position: relative;
+      width: 200px;
+      height: 40px;
+      background-color: #ccc;
+      border-radius: 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .swipe-button:before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 36px;
+      height: 36px;
+      background-color: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    .swipe-button.dragging:before {
+      transform: translateX(160px);
+    }
+
+    .swipe-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="swipe-button" draggable="true"></div>
+  <span class="swipe-text">Swipe to Activate</span>
+
+  <script>
+    var button = document.querySelector('.swipe-button');
+    var dragging = false;
+
+    button.addEventListener('dragstart', function() {
+      dragging = true;
+      button.classList.add('dragging');
+    });
+
+    button.addEventListener('dragend', function() {
+      if (dragging) {
+        var rect = button.getBoundingClientRect();
+        var progress = rect.width - 40;
+        if (progress >= rect.width * 0.8) {
+          window.open('https://www.example.com', '_blank');
+        }
+      }
+
+      dragging = false;
+      button.classList.remove('dragging');
+    });
+
+    button.addEventListener('mousemove', function(event) {
+      if (dragging) {
+        var rect = button.getBoundingClientRect();
+        var posX = event.clientX - rect.left;
+        var percentage = Math.max(0, Math.min(1, posX / rect.width));
+        button.style.setProperty('--swipe-progress', percentage);
+      }
+    });
+  </script>
+</body>
+</html>
